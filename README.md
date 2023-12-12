@@ -3,4 +3,4 @@
 [Ссылка на GitHub Pages](https://ilovebreak.github.io/MyTrello/)
 
 
-![CI](https://github.com/ilovebreak/MyTrello/actions/workflows/web.yml/badge.svg)
+![CI](https://github.com/PoguChampu/JSTrelloHometask/actions/workflows/web.yml/badge.svg)
