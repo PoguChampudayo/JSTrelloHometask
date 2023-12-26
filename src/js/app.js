@@ -1,4 +1,4 @@
-import Controller from "../js/controller";
+import Controller from "../js/Controller";
 import { saveToStorage, loadFromStorage } from "./localStorage";
 
 const controller = new Controller();
