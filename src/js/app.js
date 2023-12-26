@@ -1,5 +1,6 @@
-import Controller from "../js/Controller";
+import Controller from "./Controller";
 import { saveToStorage, loadFromStorage } from "./localStorage";
+import Card from "./Card";
 
 const controller = new Controller();
 controller.init();
