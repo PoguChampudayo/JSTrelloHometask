@@ -1,4 +1,4 @@
-import Card from "../js/Card";
+import Card from "./Card";
 
 export default class Controller {
   constructor() {
