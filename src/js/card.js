@@ -1,55 +1,60 @@
-import { startDragCard, endDragCard } from "./dnd";
-
+// Класс представляющий карточку. Имеет всё, чтобы появится и удалится
 export default class Card {
-  constructor(text, id) {
-    this.mainField = document.createElement("div");
-    this.mainField.classList.add("card");
-    this.mainField.draggable = "true";
-    if (!id) {
-      this.mainField.id = this.getRandomID();
-    } else {
-      this.mainField.id = id;
-    }
+	#el;
+	#styles;
 
-    this.deleteButton = document.createElement("div");
-    this.deleteButton.className = "delete-card hidden";
-    this.deleteButton.addEventListener("click", this.deleteCard);
+	constructor(element) {
+		this.#el = element;
+		this.#styles = window.getComputedStyle(element);
+	}
 
-    this.cardText = document.createElement("div");
-    this.cardText.classList.add("card-text");
-    this.cardText.textContent = text;
+	clear() {
+		this.#el.remove()
+	}
 
-    this.mainField.appendChild(this.deleteButton);
-    this.mainField.appendChild(this.cardText);
+	set styles(text) {
+		this.#el.style.cssText = text;
+	}
 
-    this.mainField.addEventListener("mouseenter", this.showDeleteButton);
-    this.mainField.addEventListener("mouseleave", this.hideDeleteButton);
+	get styles() {
+		return this.#styles;
+	}
 
-    this.mainField.addEventListener("dragstart", startDragCard);
-    this.mainField.addEventListener("dragend", endDragCard);
-  }
+	get proection() {
+		return (() => {
+			const d = document.createElement('div');
+			d.classList.add('proection');
+			const { width, height } = this.styles;
+			d.style.cssText = `
+	 			width: ${width};
+		 		height: ${height};
+		 		margin: 10px 0;
+				cursor: grabbing;
+			`
+			return d;
+		})();
+	}
 
-  showDeleteButton(e) {
-    e.target.firstChild.classList.remove("hidden");
-  }
+	static create(content) {
+		const node = document.createElement('div');
+		node.classList.add('draggable');
 
-  hideDeleteButton(e) {
-    e.target.firstChild.classList.add("hidden");
-  }
+		const cardText = document.createElement('div')
+		cardText.classList.add('cardText')
+		cardText.textContent = content
+		node.appendChild(cardText)
 
-  deleteCard(e) {
-    e.target.parentElement.remove();
-  }
+		const button = document.createElement('button')
+		button.classList.add('closeButton')
+		button.innerHTML = '&#10006'
+		button.addEventListener('click', (evt) => {evt.target.parentElement.remove()})
+		node.appendChild(button)
+		
 
-  getRandomID() {
-    let result = "";
-    let characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXZabcdefghijklmnopqrstuvwxz0123456789";
-    for (let i = 0; i < 10; i++) {
-      result += characters.charAt(
-        Math.floor(Math.random() * characters.length)
-      );
-    }
-    return result;
-  }
+		return new Card(node);
+	}
+
+	get element() {
+		return this.#el;
+	}
 }

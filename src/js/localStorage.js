@@ -1,22 +1,33 @@
-import Card from "./card";
+import Card from "./Card";
 
 export function saveToStorage() {
-  let storedData = {};
-  const cardContainers = document.querySelectorAll(".cards-container");
-  console.log("cardContainers", cardContainers);
+  const cardContainers = document.querySelectorAll(".card-container");
+let storedData = {}
+  let storageValue = ''
+  
   for (let cardContainer of cardContainers) {
-    let cardData = {};
-    let cards = cardContainer.querySelectorAll(".card");
-    console.log("cards", cards);
-    for (let card of cards) {
-      let cardText = card.lastElementChild.textContent;
-      cardData[card.id] = cardText;
+    switch (cardContainer.className) {
+        case "card-container todo": 
+            storageValue = 'todo';
+            break;
+        case "card-container in-progress": 
+            storageValue = 'in-progress'
+            break
+        case "card-container done": 
+            storageValue = 'done'
+            break
+        default:
+            break
     }
 
-    storedData[cardContainer.id] = cardData;
-    console.log(storedData);
-    localStorage.setItem("storedData", JSON.stringify(storedData));
+    let cards = cardContainer.querySelectorAll('.draggable')
+    for (let card of cards) {
+        let cardText = card.firstElementChild.textContent;
+        storedData[cardText] = storageValue
+    }
+
   }
+  localStorage.setItem("storedData", JSON.stringify(storedData));
 }
 
 export function loadFromStorage() {
@@ -26,37 +37,17 @@ export function loadFromStorage() {
 
   try {
     storedData = JSON.parse(json);
+    console.log(storedData)
   } catch (error) {
     console.log(error);
   }
 
-  if (
-    !(
-      Object.keys(storedData["done"]) +
-      Object.keys(storedData["in progress"]) +
-      Object.keys(storedData["done"])
-    )
-  ) {
-    storedData = {
-      todo: {
-        FPLhU28JG1: "Проснуться...\n",
-        tI0qxe5tj8: "Улыбнуться...",
-        S2AFkXXRpw: "Очень сладко потянуться...",
-      },
-      "in progress": { hXb7uPmQTb: "И закинуть", "5OIxrEi4J8": "Прямо в рот" },
-      done: { gJ7saj5EWU: "Превосходный бутерброд!" },
-    };
-  }
-
   if (storedData) {
     Object.keys(storedData).forEach((key) => {
-      let cardContainer = document.getElementById(key);
-      let cardData = storedData[key];
-      Object.keys(cardData).forEach((id) => {
-        const card = new Card(cardData[id], id);
-        const addContainer = cardContainer.querySelector(".add-container");
-        addContainer.parentElement.insertBefore(card.mainField, addContainer);
-      });
+      let cardContainer = document.querySelector('.' + storedData[key]);
+      console.log(key)
+      cardContainer.insertBefore(Card.create(key).element, cardContainer.lastElementChild)
     });
   }
 }
+
